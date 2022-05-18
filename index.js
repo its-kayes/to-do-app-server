@@ -1,4 +1,4 @@
-const { MongoClient, ServerApiVersion } = require('mongodb');
+const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
 const express = require('express')
 const app = express()
 const cors = require('cors');
@@ -30,7 +30,14 @@ async function run() {
             // let isAdmin = user.role === 'admin';
             res.send(user);
             console.log(user);
-        })
+        });
+
+        app.delete('/tasks/:id', async (req, res) => {
+            let id = req.params.id;
+            let query = { _id: ObjectId(id) };
+            let task = await taskCollectiondb.deleteOne(query);
+            res.send(task);
+        });
 
     }
 
