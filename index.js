@@ -10,7 +10,9 @@ app.use(cors());
 app.use(express.json());
 
 
-const uri = "mongodb+srv://todoadmin:YOC3PBnQXYWtONGm@cluster0.dto4t.mongodb.net/?retryWrites=true&w=majority";
+
+const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@cluster0.dto4t.mongodb.net/?retryWrites=true&w=majority`;
+
 const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true, serverApi: ServerApiVersion.v1 });
 
 
@@ -27,7 +29,6 @@ async function run() {
         app.get('/tasks/:email', async(req, res) => {
             let email = req.params.email;
             let user = await taskCollectiondb.find({ email: email }).toArray();
-            // let isAdmin = user.role === 'admin';
             res.send(user);
             console.log(user);
         });
@@ -38,7 +39,6 @@ async function run() {
             let task = await taskCollectiondb.deleteOne(query);
             res.send(task);
         });
-
     }
 
     finally{
