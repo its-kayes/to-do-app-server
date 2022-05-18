@@ -24,6 +24,14 @@ async function run() {
             res.send(result);
         });
 
+        app.get('/tasks/:email', async(req, res) => {
+            let email = req.params.email;
+            let user = await taskCollectiondb.find({ email: email }).toArray();
+            // let isAdmin = user.role === 'admin';
+            res.send(user);
+            console.log(user);
+        })
+
     }
 
     finally{
