@@ -20,16 +20,45 @@ async function run() {
     try {
         await client.connect();
         let taskCollectiondb = client.db("todo").collection("task");
+
         app.post('/tasks', async (req, res) => {
             let task = req.body;
             let result = await taskCollectiondb.insertOne(task);
             res.send(result);
         });
-        app.get('/tasks', async (req, res) => {
-            let user = await taskCollectiondb.find().toArray();
-            res.send(user);
-            console.log(user);
+
+        app.get('/tasks/:role', async (req, res) => {
+            let role = req.params.role;
+            console.log(role);
+            if (role = "complete") {
+                let query = { role: role }
+                let user = await taskCollectiondb.find(query).toArray();
+                res.send(user);
+
+            }
+            else {
+                if (role = "do") {
+                    let query = { role: "do" }
+                    let user = await taskCollectiondb.find(query).toArray();
+                    res.send(user);
+                }
+            }
         });
+
+        app.get('/todo/:role', async (req, res) => {
+            let role = req.params.role;
+            console.log(role);
+            if (role = "do") {
+                let query = { role: "do" }
+                let user = await taskCollectiondb.find(query).toArray();
+                res.send(user);
+            }
+        });
+
+        // app.get('/tasks', async (req, res) => {
+        //     let user = await taskCollectiondb.find().toArray();
+        //     res.send(user);
+        // });
 
         app.delete('/tasks/:id', async (req, res) => {
             let id = req.params.id;
@@ -45,6 +74,21 @@ async function run() {
                 $set: {
                     name: todo.name,
                     description: todo.description
+                }
+            }
+            let query = { _id: ObjectId(id) };
+            let options = { upsert: true };
+            let result = await taskCollectiondb.updateOne(query, updateTodo, options);
+            res.send(result);
+        })
+
+        app.put('/complete/:id', async (req, res) => {
+            let id = req.params.id;
+            // let todo = req.body;
+            // console.log(todo);
+            let updateTodo = {
+                $set: {
+                    role: "complete"
                 }
             }
             let query = { _id: ObjectId(id) };
