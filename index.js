@@ -26,9 +26,14 @@ async function run() {
             res.send(result);
         });
 
-        app.get('/tasks/:email', async(req, res) => {
-            let email = req.params.email;
-            let user = await taskCollectiondb.find({ email: email }).toArray();
+        // app.get('/tasks/:email', async(req, res) => {
+        //     let email = req.params.email;
+        //     let user = await taskCollectiondb.find({ email: email }).toArray();
+        //     res.send(user);
+        //     console.log(user);
+        // });
+        app.get('/tasks', async(req, res) => {
+            let user = await taskCollectiondb.find().toArray();
             res.send(user);
             console.log(user);
         });
