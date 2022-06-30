@@ -25,14 +25,7 @@ async function run() {
             let result = await taskCollectiondb.insertOne(task);
             res.send(result);
         });
-
-        // app.get('/tasks/:email', async(req, res) => {
-        //     let email = req.params.email;
-        //     let user = await taskCollectiondb.find({ email: email }).toArray();
-        //     res.send(user);
-        //     console.log(user);
-        // });
-        app.get('/tasks', async(req, res) => {
+        app.get('/tasks', async (req, res) => {
             let user = await taskCollectiondb.find().toArray();
             res.send(user);
             console.log(user);
@@ -44,9 +37,24 @@ async function run() {
             let task = await taskCollectiondb.deleteOne(query);
             res.send(task);
         });
+        app.put('/todo/:id', async (req, res) => {
+            let id = req.params.id;
+            let todo = req.body;
+            console.log(todo);
+            let updateTodo = {
+                $set: {
+                    name: todo.name,
+                    description: todo.description
+                }
+            }
+            let query = { _id: ObjectId(id) };
+            let options = { upsert: true };
+            let result = await taskCollectiondb.updateOne(query, updateTodo, options);
+            res.send(result);
+        })
     }
 
-    finally{
+    finally {
 
     }
 
